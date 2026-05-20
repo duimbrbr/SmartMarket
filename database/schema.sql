@@ -1,0 +1,47 @@
+CREATE TABLE IF NOT EXISTS users (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS shopping_lists (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS shopping_list_items (
+  id SERIAL PRIMARY KEY,
+  shopping_list_id INT NOT NULL REFERENCES shopping_lists(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  quantity NUMERIC(10,3) NOT NULL DEFAULT 1,
+  is_purchased BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL,
+  categoria TEXT NOT NULL,
+  gtin TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS purchases (
+  id SERIAL PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  store_name TEXT NOT NULL,
+  purchased_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  total NUMERIC(10,2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS purchase_items (
+  id SERIAL PRIMARY KEY,
+  purchase_id INT NOT NULL REFERENCES purchases(id) ON DELETE CASCADE,
+  product_name TEXT NOT NULL,
+  quantity NUMERIC(10,3) NOT NULL,
+  unit_price NUMERIC(10,2) NOT NULL,
+  total_price NUMERIC(10,2) NOT NULL
+);
